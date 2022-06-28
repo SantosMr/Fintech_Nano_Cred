@@ -1,8 +1,0 @@
-<?xml version = '1.0' encoding = 'UTF-8'?>
-<OSDM_Design class="oracle.dbtools.crest.model.design.Design" name="Atividade_fase3_cap7" id="50C43333-A2D2-AF5A-3469-687E6280C3D4" version="3.5">
-<createdBy>Mauricio</createdBy>
-<createdTime>2022-05-06 12:25:10 UTC</createdTime>
-<ownerDesignName>exemplo</ownerDesignName>
-<capitalNames>false</capitalNames>
-<designId>50C43333-A2D2-AF5A-3469-687E6280C3D4</designId>
-</OSDM_Design>
