@@ -1,0 +1,252 @@
+-- Gerado por Oracle SQL Developer Data Modeler 21.4.1.349.1605
+--   em:        2022-05-22 14:53:54 BRT
+--   site:      Oracle Database 12c
+--   tipo:      Oracle Database 12c
+
+
+
+-- predefined type, no DDL - MDSYS.SDO_GEOMETRY
+
+-- predefined type, no DDL - XMLTYPE
+
+CREATE TABLE bairro (
+    nome_bairro        VARCHAR2(20 CHAR) NOT NULL,
+    cidade_nome_cidade VARCHAR2(20 CHAR) NOT NULL
+);
+
+ALTER TABLE bairro ADD CONSTRAINT bairro_pk PRIMARY KEY ( nome_bairro );
+
+CREATE TABLE cidade (
+    nome_cidade        VARCHAR2(20 CHAR) NOT NULL,
+    estado_nome_estado VARCHAR2(10 CHAR) NOT NULL
+);
+
+ALTER TABLE cidade ADD CONSTRAINT cidade_pk PRIMARY KEY ( nome_cidade );
+
+CREATE TABLE emprestimo (
+    cod_emprestimo      NUMBER NOT NULL,
+    usuario_cod_usuario NUMBER NOT NULL,
+    valor               NUMBER(6) NOT NULL,
+    parcelas            NUMBER(2) NOT NULL,
+    data                DATE NOT NULL,
+    antecipa_13         VARCHAR2(3 CHAR),
+    antecipa_ir         VARCHAR2(3 CHAR),
+    consignado          VARCHAR2(3)
+);
+
+ALTER TABLE emprestimo ADD CONSTRAINT emprestimo_pk PRIMARY KEY ( cod_emprestimo );
+
+CREATE TABLE endereco_empresa (
+    cep                 NUMBER(8) NOT NULL,
+    rua_nome_rua        VARCHAR2(20 CHAR) NOT NULL,
+    usuario_cod_usuario NUMBER,
+    empresa             VARCHAR2(20 CHAR),
+    complemento         VARCHAR2(10 CHAR)
+);
+
+ALTER TABLE endereco_empresa ADD CONSTRAINT endereco_empresa_pk PRIMARY KEY ( cep );
+
+CREATE TABLE endereco_residen (
+    cep                 NUMBER(8) NOT NULL,
+    usuario_cod_usuario NUMBER NOT NULL,
+    rua_nome_rua        VARCHAR2(20 CHAR) NOT NULL,
+    complemento         VARCHAR2(10 CHAR)
+);
+
+ALTER TABLE endereco_residen ADD CONSTRAINT endereco_resisdencia_pk PRIMARY KEY ( cep );
+
+CREATE TABLE entrada (
+    senha               VARCHAR2(8 CHAR) NOT NULL,
+    usuario_cod_usuario NUMBER NOT NULL,
+    cod_usuario         NUMBER NOT NULL
+);
+
+CREATE UNIQUE INDEX entrada__idx ON
+    entrada (
+        usuario_cod_usuario
+    ASC );
+
+ALTER TABLE entrada ADD CONSTRAINT entrada_pk PRIMARY KEY ( senha );
+
+CREATE TABLE estado (
+    nome_estado VARCHAR2(10 CHAR) NOT NULL
+);
+
+ALTER TABLE estado ADD CONSTRAINT estado_pk PRIMARY KEY ( nome_estado );
+
+CREATE TABLE rua (
+    nome_rua           VARCHAR2(20 CHAR) NOT NULL,
+    bairro_nome_bairro VARCHAR2(20 CHAR) NOT NULL,
+    numero_logradouro  NUMBER(8) NOT NULL
+);
+
+ALTER TABLE rua ADD CONSTRAINT rua_pk PRIMARY KEY ( nome_rua );
+
+CREATE TABLE simulado (
+    cod_simulado        NUMBER NOT NULL,
+    usuario_cod_usuario NUMBER NOT NULL,
+    valor               NUMBER(6) NOT NULL,
+    parcelas            NUMBER(2) NOT NULL,
+    data                DATE NOT NULL
+);
+
+ALTER TABLE simulado ADD CONSTRAINT simulado_pk PRIMARY KEY ( cod_simulado );
+
+CREATE TABLE telefone_cel (
+    telefone_celular    NUMBER(11) NOT NULL,
+    usuario_cod_usuario NUMBER NOT NULL
+);
+
+CREATE UNIQUE INDEX telefone_cel__idx ON
+    telefone_cel (
+        usuario_cod_usuario
+    ASC );
+
+ALTER TABLE telefone_cel ADD CONSTRAINT telefone_cel_pk PRIMARY KEY ( telefone_celular );
+
+CREATE TABLE telefone_empresa (
+    telefone            NUMBER(11) NOT NULL,
+    usuario_cod_usuario NUMBER,
+    ramal               NUMBER
+);
+
+ALTER TABLE telefone_empresa ADD CONSTRAINT telefone_empresa_pk PRIMARY KEY ( telefone );
+
+CREATE TABLE telefone_residencia (
+    telefone_residencia NUMBER(11) NOT NULL,
+    usuario_cod_usuario NUMBER
+);
+
+ALTER TABLE telefone_residencia ADD CONSTRAINT telefone_residencia_pk PRIMARY KEY ( telefone_residencia );
+
+CREATE TABLE usuario (
+    cod_usuario    NUMBER NOT NULL,
+    cpf_login      NUMBER(11) NOT NULL,
+    nome           VARCHAR2(20 CHAR) NOT NULL,
+    renda          NUMBER(6) NOT NULL,
+    estado_civil   VARCHAR2(10 CHAR) NOT NULL,
+    data_nacimento DATE NOT NULL,
+    sexo           CHAR(10 CHAR),
+    ocupacao       VARCHAR2(10 CHAR) NOT NULL,
+    data_adimissao DATE NOT NULL,
+    email          VARCHAR2(20 CHAR) NOT NULL
+);
+
+ALTER TABLE usuario ADD CONSTRAINT usuario_pk PRIMARY KEY ( cod_usuario );
+
+CREATE TABLE valor_pre_aprovado (
+    cod_valor           NUMBER NOT NULL,
+    usuario_cod_usuario NUMBER NOT NULL,
+    valor               NUMBER(6) NOT NULL,
+    parcelas            NUMBER(2) NOT NULL,
+    data                DATE NOT NULL
+);
+
+CREATE UNIQUE INDEX valor_pre_aprovado__idx ON
+    valor_pre_aprovado (
+        usuario_cod_usuario
+    ASC );
+
+ALTER TABLE valor_pre_aprovado ADD CONSTRAINT valor_pre_aprovado_pk PRIMARY KEY ( cod_valor );
+
+ALTER TABLE bairro
+    ADD CONSTRAINT bairro_cidade_fk FOREIGN KEY ( cidade_nome_cidade )
+        REFERENCES cidade ( nome_cidade );
+
+ALTER TABLE cidade
+    ADD CONSTRAINT cidade_estado_fk FOREIGN KEY ( estado_nome_estado )
+        REFERENCES estado ( nome_estado );
+
+ALTER TABLE emprestimo
+    ADD CONSTRAINT emprestimo_usuario_fk FOREIGN KEY ( usuario_cod_usuario )
+        REFERENCES usuario ( cod_usuario );
+
+ALTER TABLE endereco_empresa
+    ADD CONSTRAINT endereco_empresa_rua_fk FOREIGN KEY ( rua_nome_rua )
+        REFERENCES rua ( nome_rua );
+
+ALTER TABLE endereco_empresa
+    ADD CONSTRAINT endereco_empresa_usuario_fk FOREIGN KEY ( usuario_cod_usuario )
+        REFERENCES usuario ( cod_usuario );
+
+ALTER TABLE endereco_residen
+    ADD CONSTRAINT endereco_resisdencia_rua_fk FOREIGN KEY ( rua_nome_rua )
+        REFERENCES rua ( nome_rua );
+
+ALTER TABLE endereco_residen
+    ADD CONSTRAINT endereco_resisdencia_us_fk FOREIGN KEY ( usuario_cod_usuario )
+        REFERENCES usuario ( cod_usuario );
+
+ALTER TABLE entrada
+    ADD CONSTRAINT entrada_usuario_fk FOREIGN KEY ( usuario_cod_usuario )
+        REFERENCES usuario ( cod_usuario );
+
+ALTER TABLE rua
+    ADD CONSTRAINT rua_bairro_fk FOREIGN KEY ( bairro_nome_bairro )
+        REFERENCES bairro ( nome_bairro );
+
+ALTER TABLE simulado
+    ADD CONSTRAINT simulado_usuario_fk FOREIGN KEY ( usuario_cod_usuario )
+        REFERENCES usuario ( cod_usuario );
+
+ALTER TABLE telefone_cel
+    ADD CONSTRAINT telefone_cel_usuario_fk FOREIGN KEY ( usuario_cod_usuario )
+        REFERENCES usuario ( cod_usuario );
+
+ALTER TABLE telefone_empresa
+    ADD CONSTRAINT telefone_empresa_usuario_fk FOREIGN KEY ( usuario_cod_usuario )
+        REFERENCES usuario ( cod_usuario );
+
+ALTER TABLE telefone_residencia
+    ADD CONSTRAINT telefone_residencia_usuario_fk FOREIGN KEY ( usuario_cod_usuario )
+        REFERENCES usuario ( cod_usuario );
+
+ALTER TABLE valor_pre_aprovado
+    ADD CONSTRAINT valor_pre_aprovado_usuario_fk FOREIGN KEY ( usuario_cod_usuario )
+        REFERENCES usuario ( cod_usuario );
+
+
+
+-- Relatório do Resumo do Oracle SQL Developer Data Modeler: 
+-- 
+-- CREATE TABLE                            14
+-- CREATE INDEX                             3
+-- ALTER TABLE                             28
+-- CREATE VIEW                              0
+-- ALTER VIEW                               0
+-- CREATE PACKAGE                           0
+-- CREATE PACKAGE BODY                      0
+-- CREATE PROCEDURE                         0
+-- CREATE FUNCTION                          0
+-- CREATE TRIGGER                           0
+-- ALTER TRIGGER                            0
+-- CREATE COLLECTION TYPE                   0
+-- CREATE STRUCTURED TYPE                   0
+-- CREATE STRUCTURED TYPE BODY              0
+-- CREATE CLUSTER                           0
+-- CREATE CONTEXT                           0
+-- CREATE DATABASE                          0
+-- CREATE DIMENSION                         0
+-- CREATE DIRECTORY                         0
+-- CREATE DISK GROUP                        0
+-- CREATE ROLE                              0
+-- CREATE ROLLBACK SEGMENT                  0
+-- CREATE SEQUENCE                          0
+-- CREATE MATERIALIZED VIEW                 0
+-- CREATE MATERIALIZED VIEW LOG             0
+-- CREATE SYNONYM                           0
+-- CREATE TABLESPACE                        0
+-- CREATE USER                              0
+-- 
+-- DROP TABLESPACE                          0
+-- DROP DATABASE                            0
+-- 
+-- REDACTION POLICY                         0
+-- TSDP POLICY                              0
+-- 
+-- ORDS DROP SCHEMA                         0
+-- ORDS ENABLE SCHEMA                       0
+-- ORDS ENABLE OBJECT                       0
+-- 
+-- ERRORS                                   0
+-- WARNINGS                                 0
